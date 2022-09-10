@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong!</title>
+    <script src="pong.js" defer></script>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <h1>Ping Pong!<h5>Made By Rosux(no mobile support &#128526;)</h5></h1>
+    <div class="controls">
+        <div class="wrapper">
+            <p>P: Pause/Unpause</p>
+            <p>R: Reset Game</p>
+        </div>
+        <div class="wrapper">
+            <p>W: Move Left Paddle Up</p>
+            <p>S: Move Left Paddle Down</p>
+        </div>
+        <div class="wrapper">
+            <p>&#8593;: Move Right Paddle Up</p>
+            <p>&#8595;: Move Right Paddle Down</p>
+        </div>
+        <div class="wrapper">
+            <h1 mutebutton="" onclick="game.mute();">&#128266;</h1>
+        </div>
+    </div>
+    <canvas class="canvas" width="512px" height="256px" ping="pong" onclick="game.start();">
+        shitty browser detected
+    </canvas>
+</body>
+</html>
+
+<!-- http://www-classes.usc.edu/engr/ee-s/477p/s00/pong.html -->
+
+
+
+<!-- 
+
+
+Screen size 256 X 512 pixels
+Screen score display shows "points"  up to 21
+Must redraw screen every 30th of a second
+
+The ball looks like this:
+     XX
+    XXXX
+   XXXXXX
+    XXXX
+     XX 
+
+
+
+The ball can move from -7 to +7 pixels in both the x and y directions, for each screen display (every 1/30 sec.).  The ball can travel across the entire screen in about 2.5 sec.  When the ball hits a paddle, it moves in the opposite x direction, but continues in the same y direction.  When the ball hits the top or bottom of the screen, it reverses its y direction, but continues in the same x direction.  When the ball hits the right or left edge of the screen, it goes off the edge and the game ends. 
+
+The paddle is 28 pixels long. AND 2 PIXELS Wide
+
+ -->

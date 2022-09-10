@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap');
+:root{
+    --header-color: rgb(32, 32, 32);
+    --full-color: rgb(255, 255, 255);
+    --text-color: rgb(90, 90, 90);
+    --text-color-hightlight: rgb(140, 140, 140);
+    --background-color: rgb(24, 24, 24);
+    --font: 'Noto Sans', sans-serif;
+}
+body, html{
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    font-family: var(--font);
+    font-weight: 300;
+}
+p, a, h1, h2, h3, h4, h5, h6, ul{
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    color: inherit;
+}
+*{
+    box-sizing: border-box;
+}
+/* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.controls{
+    width: 50%;
+    padding: 15px 0;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr 1fr 4ch;
+    column-gap: 25px;
+}
+h1[mutebutton='']{
+    user-select: none;
+    cursor: pointer;
+}
+.canvas{
+    min-height: 500px;
+    height: 50vh;
+    width: auto;
+    aspect-ratio: 512/256;
+    border: solid 1px white;
+    image-rendering: crisp-edges;
+    margin-bottom: 5px;
+}
