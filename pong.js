@@ -179,8 +179,8 @@ class Ball{
                 }
             }
         }
-        this.pos.x += this.vel.x*deltatime;
-        this.pos.y += this.vel.y*deltatime;
+        this.pos.x += this.vel.x/deltatime;
+        this.pos.y += this.vel.y/deltatime;
     }
     render(ctx){
         ctx.fillStyle = this.color;
