@@ -110,8 +110,6 @@ class Game {
     movePaddles(deltatime){
         if(this.paused) return;
         if(!deltatime) return;
-        // this.paddle.left.y = this.paddle.left.y += this.paddle.left.vel * paddleSpeed * deltatime;
-        // this.paddle.right.y = this.paddle.right.y += this.paddle.right.vel * paddleSpeed * deltatime;
         this.paddle.left.y = clamp(this.paddle.left.y += this.paddle.left.vel * paddleSpeed, this.paddle.left.height/2, this.height-(this.paddle.left.height/2));
         this.paddle.right.y = clamp(this.paddle.right.y += this.paddle.right.vel * paddleSpeed, this.paddle.right.height/2, this.height-(this.paddle.right.height/2));
     }
