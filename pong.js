@@ -164,7 +164,7 @@ class Ball{
             if(this.pos.y >= paddle.left.y-paddle.left.height/2 && this.pos.y <= paddle.left.y+paddle.left.height/2){
                 let offset = (this.pos.y - paddle.left.y) / paddle.left.height / 2;
                 this.vel.y = offset * deltatime;
-                this.vel.x*=-1;
+                this.vel.x *= -1;
                 if(!muted){
                     leftPong.play();
                 }
@@ -176,7 +176,7 @@ class Ball{
             if(this.pos.y >= paddle.right.y-paddle.right.height/2 && this.pos.y <= paddle.right.y+paddle.right.height/2){
                 let offset = (this.pos.y - paddle.right.y) / paddle.right.height / 2;
                 this.vel.y = offset * deltatime;
-                this.vel.x =*-1;
+                this.vel.x *= -1;
                 if(!muted){
                     rightPong.play();
                 }
