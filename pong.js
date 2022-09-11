@@ -25,14 +25,14 @@ class Game {
         this.paddle = {
             left: {
                 x: 35,
-                y: this.height/2,
+                y: clamp(this.height/2, 28/2, this.height-(28/2)),
                 vel: 0,
                 height: 28,
                 width: 2
             },
             right: {
                 x: this.width-35,
-                y: this.height/2,
+                y: clamp(this.height/2, 28/2, this.height-(28/2)),
                 vel: 0,
                 height: 28,
                 width: 2
@@ -110,6 +110,8 @@ class Game {
     movePaddles(deltatime){
         if(this.paused) return;
         if(!deltatime) return;
+        // this.paddle.left.y = this.paddle.left.y += this.paddle.left.vel * paddleSpeed * deltatime;
+        // this.paddle.right.y = this.paddle.right.y += this.paddle.right.vel * paddleSpeed * deltatime;
         this.paddle.left.y = clamp(this.paddle.left.y += this.paddle.left.vel * paddleSpeed, this.paddle.left.height/2, this.height-(this.paddle.left.height/2));
         this.paddle.right.y = clamp(this.paddle.right.y += this.paddle.right.vel * paddleSpeed, this.paddle.right.height/2, this.height-(this.paddle.right.height/2));
     }
@@ -157,20 +159,22 @@ class Ball{
         if(this.pos.y >= this.game.height || this.pos.y <= 0){
             this.vel.y = -this.vel.y;
         }
+        // TODO FIX COLLISION DETECTION TO HAVE A WIDER CHECK WITH (right now it checks for 1 pixel)
         if(this.pos.x >= paddle.left.x-(paddle.left.width/2) && this.pos.x <= paddle.left.x+(paddle.left.width/2)){
             if(this.pos.y >= paddle.left.y-paddle.left.height/2 && this.pos.y <= paddle.left.y+paddle.left.height/2){
-                let offset = (this.pos.y - paddle.left.y) / paddle.left.height*4;
-                this.vel.y = offset * 2;
+                let offset = (this.pos.y - paddle.left.y) / paddle.left.height / 2;
+                this.vel.y = offset * deltatime;
                 this.vel.x = -this.vel.x;
                 if(!muted){
                     leftPong.play();
                 }
             }
         }
+        // TODO FIX COLLISION DETECTION TO HAVE A WIDER CHECK WITH (right now it checks for 1 pixel)
         if(this.pos.x >= paddle.right.x-(paddle.right.width/2) && this.pos.x <= paddle.right.x+(paddle.right.width/2)){
             if(this.pos.y >= paddle.right.y-paddle.right.height/2 && this.pos.y <= paddle.right.y+paddle.right.height/2){
-                let offset = (this.pos.y - paddle.right.y) / paddle.right.height*4;
-                this.vel.y = offset * 2;
+                let offset = (this.pos.y - paddle.right.y) / paddle.right.height / 2;
+                this.vel.y = offset * deltatime;
                 this.vel.x = -this.vel.x;
                 if(!muted){
                     rightPong.play();
@@ -190,12 +194,15 @@ class Ball{
     }
 }
 
-let game = new Game("#000000", "#FFFFFF");
+let game = new Game();
 game.playRound();
 
 let lastTime = 0;
 function gameloop(timestamp){
+    if(!timestamp) return;
     let deltatime = timestamp - lastTime;
+    // lastTime = timestamp;
+    console.log(deltatime);
     lastTime = timestamp;
     /* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
     // controlls
@@ -242,4 +249,5 @@ function gameloop(timestamp){
     requestAnimationFrame(gameloop);
 }
 
-gameloop();
+window.requestAnimationFrame(gameloop);
+// gameloop();
