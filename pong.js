@@ -6,8 +6,7 @@ var rightPong = new Audio('audio/blipSelect(2).wav');
 var death = new Audio('audio/hitHurt.wav');
 
 var paddleSpeed = 4;
-var maxBallSpeed = 3.5;
-var ballSpeed = 3.5;
+var ballSpeed = 5;
 var paddleLeftX = 0;
 var paddleRightX = 0;
 var muted = false;
@@ -148,43 +147,49 @@ class Game {
 class Ball{
     constructor(x, y){
         this.pos = {x: x, y: y};
-        this.vel = {x: clamp(0, -maxBallSpeed, maxBallSpeed), y: clamp(0, -maxBallSpeed, maxBallSpeed)};
+        this.vel = {x: ballSpeed, y: ballSpeed};
         this.color = "#fff";
         this.game = {width: x*2, height: y*2};
     }
     update(paddle, deltatime){
-        if(!deltatime) return;
+        //if(!deltatime) return;
+        //^ wtf is that
+        if(deltatime==null) return;
         if(this.pos.y >= this.game.height || this.pos.y <= 0){
-            this.vel.y = -this.vel.y;
+            this.vel.y*=-1;
         }
         // TODO FIX COLLISION DETECTION TO HAVE A WIDER CHECK WITH (right now it checks for 1 pixel)
+        // TODO: might fix this for you ros
         if(this.pos.x >= paddle.left.x-(paddle.left.width/2) && this.pos.x <= paddle.left.x+(paddle.left.width/2)){
             if(this.pos.y >= paddle.left.y-paddle.left.height/2 && this.pos.y <= paddle.left.y+paddle.left.height/2){
                 let offset = (this.pos.y - paddle.left.y) / paddle.left.height / 2;
                 this.vel.y = offset * deltatime;
-                this.vel.x = -this.vel.x;
+                this.vel.x*=-1;
                 if(!muted){
                     leftPong.play();
                 }
             }
         }
         // TODO FIX COLLISION DETECTION TO HAVE A WIDER CHECK WITH (right now it checks for 1 pixel)
+        // TODO: might fix this for you ros
         if(this.pos.x >= paddle.right.x-(paddle.right.width/2) && this.pos.x <= paddle.right.x+(paddle.right.width/2)){
             if(this.pos.y >= paddle.right.y-paddle.right.height/2 && this.pos.y <= paddle.right.y+paddle.right.height/2){
                 let offset = (this.pos.y - paddle.right.y) / paddle.right.height / 2;
                 this.vel.y = offset * deltatime;
-                this.vel.x = -this.vel.x;
+                this.vel.x =*-1;
                 if(!muted){
                     rightPong.play();
                 }
             }
         }
-        this.pos.x += this.vel.x*deltatime;
-        this.pos.y += this.vel.y*deltatime;
+        this.pos.x += this.vel.x/deltatime;
+        this.pos.y += this.vel.y/deltatime;
     }
     render(ctx){
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.pos.x-2,this.pos.y-2,4,4);
+        ctx.beginPath();
+        ctx.arc(100, 75, 2, 0, 2 * Math.PI);
+        ctx.fill();
     }
     setVel(x, y){
         this.vel.x = x;
