@@ -6,6 +6,7 @@ var rightPong = new Audio('audio/blipSelect(2).wav');
 var death = new Audio('audio/hitHurt.wav');
 
 var paddleSpeed = 4;
+var maxBallSpeed = 5;
 var ballSpeed = 5;
 var paddleLeftX = 0;
 var paddleRightX = 0;
