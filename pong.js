@@ -1,15 +1,17 @@
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 const getRandomFloat = (min, max, decimals) => parseFloat((Math.random() * (max - min) + min).toFixed(decimals));
+const getMag = (x, y)=>{
+    // the formula to determine the magnitude of a vector (in two dimensional space) v = (x, y) is: |v| =√(x2 + y2).
+    return Math.sqrt( x*x + y*y );
+}
 
 var leftPong = new Audio('audio/blipSelect(1).wav');
 var rightPong = new Audio('audio/blipSelect(2).wav');
 var death = new Audio('audio/hitHurt.wav');
 
-var paddleSpeed = 4;
-var maxBallSpeed = 3.5;
-var ballSpeed = 3.5;
-var paddleLeftX = 0;
-var paddleRightX = 0;
+var paddleSpeed = .2;
+var paddleBounce = 10;
+var ballSpeed = 7;
 var muted = false;
 
 class Game {
@@ -110,16 +112,16 @@ class Game {
     movePaddles(deltatime){
         if(this.paused) return;
         if(!deltatime) return;
-        this.paddle.left.y = clamp(this.paddle.left.y += this.paddle.left.vel * paddleSpeed, this.paddle.left.height/2, this.height-(this.paddle.left.height/2));
-        this.paddle.right.y = clamp(this.paddle.right.y += this.paddle.right.vel * paddleSpeed, this.paddle.right.height/2, this.height-(this.paddle.right.height/2));
+        this.paddle.left.y = clamp(this.paddle.left.y += this.paddle.left.vel * paddleSpeed * deltatime, this.paddle.left.height/2, this.height-(this.paddle.left.height/2));
+        this.paddle.right.y = clamp(this.paddle.right.y += this.paddle.right.vel * paddleSpeed * deltatime, this.paddle.right.height/2, this.height-(this.paddle.right.height/2));
     }
     playRound(){
         if(!this.isRunning) return;
         this.ball.pos.x = this.width/2;
         this.ball.pos.y = this.height/2;
-        if(this.lastscore == 1) this.ball.vel.x = -maxBallSpeed;
-        if(this.lastscore == 0) this.ball.vel.x = maxBallSpeed;
-        this.ball.vel.y = getRandomFloat(-(maxBallSpeed/2), (maxBallSpeed/2), 2);
+        if(this.lastscore == 1) this.ball.vel.x = -ballSpeed;
+        if(this.lastscore == 0) this.ball.vel.x = ballSpeed;
+        this.ball.vel.y = getRandomFloat(-(3.5/2), (3.5/2), 2);
         this.paddle.left.y = this.height/2;
         this.paddle.right.y = this.height/2;
     }
@@ -128,8 +130,7 @@ class Game {
         this.score.right = 0;
         this.ball.pos.x = this.width/2;
         this.ball.pos.y = this.height/2;
-        this.ball.vel.x = 0;
-        this.ball.vel.y = 0;
+        this.ball.vel = {x: 0, y: 0};
         this.paddle.left.y = this.height/2;
         this.paddle.right.y = this.height/2;
         this.playRound();
@@ -148,7 +149,7 @@ class Game {
 class Ball{
     constructor(x, y){
         this.pos = {x: x, y: y};
-        this.vel = {x: clamp(0, -maxBallSpeed, maxBallSpeed), y: clamp(0, -maxBallSpeed, maxBallSpeed)};
+        this.vel = {x: 0, y: 0};
         this.color = "#fff";
         this.game = {width: x*2, height: y*2};
     }
@@ -160,8 +161,8 @@ class Ball{
         // TODO FIX COLLISION DETECTION TO HAVE A WIDER CHECK WITH (right now it checks for 1 pixel)
         if(this.pos.x >= paddle.left.x-(paddle.left.width/2) && this.pos.x <= paddle.left.x+(paddle.left.width/2)){
             if(this.pos.y >= paddle.left.y-paddle.left.height/2 && this.pos.y <= paddle.left.y+paddle.left.height/2){
-                let offset = (this.pos.y - paddle.left.y) / paddle.left.height / 2;
-                this.vel.y = offset * deltatime;
+                let offset = (this.pos.y - paddle.left.y) / (paddle.left.height / 2);
+                this.vel.y = offset*paddleBounce;
                 this.vel.x = -this.vel.x;
                 if(!muted){
                     leftPong.play();
@@ -171,16 +172,16 @@ class Ball{
         // TODO FIX COLLISION DETECTION TO HAVE A WIDER CHECK WITH (right now it checks for 1 pixel)
         if(this.pos.x >= paddle.right.x-(paddle.right.width/2) && this.pos.x <= paddle.right.x+(paddle.right.width/2)){
             if(this.pos.y >= paddle.right.y-paddle.right.height/2 && this.pos.y <= paddle.right.y+paddle.right.height/2){
-                let offset = (this.pos.y - paddle.right.y) / paddle.right.height / 2;
-                this.vel.y = offset * deltatime;
+                let offset = (this.pos.y - paddle.right.y) / (paddle.right.height / 2);
+                this.vel.y = offset*paddleBounce;
                 this.vel.x = -this.vel.x;
                 if(!muted){
                     rightPong.play();
                 }
             }
         }
-        this.pos.x += this.vel.x;
-        this.pos.y += this.vel.y;
+        this.pos.x += this.vel.x * ballSpeed / deltatime;
+        this.pos.y += this.vel.y * ballSpeed / deltatime;
     }
     render(ctx){
         ctx.fillStyle = this.color;
@@ -195,12 +196,13 @@ class Ball{
 let game = new Game();
 game.playRound();
 
+var paddleLeftX = 0;
+var paddleRightX = 0;
+
 let lastTime = 0;
 function gameloop(timestamp){
     if(!timestamp) return;
     let deltatime = timestamp - lastTime;
-    // lastTime = timestamp;
-    console.log(deltatime);
     lastTime = timestamp;
     /* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
     // controlls
