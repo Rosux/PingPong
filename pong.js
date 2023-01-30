@@ -180,8 +180,8 @@ class Ball{
                 }
             }
         }
-        this.pos.x += this.vel.x * ballSpeed / deltatime; // fix / becomes *
-        this.pos.y += this.vel.y * ballSpeed / deltatime; // fix / becomes *
+        this.pos.x += this.vel.x * ballSpeed/200 * deltatime;
+        this.pos.y += this.vel.y * ballSpeed/200 * deltatime;
     }
     render(ctx){
         ctx.fillStyle = this.color;
